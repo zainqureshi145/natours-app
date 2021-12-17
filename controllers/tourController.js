@@ -81,24 +81,41 @@ exports.createTour = async (request, response) => {
     }
 }
 // Update/Patch a tour
-exports.updateTour = (request, response) => {
-    // console.log(request.params);
-    // const id = request.params.id * 1;
-    // const tour = tours.find(element => element.id === id);
-         response.status(200).json({
-             status: 'success',
-             data: {
-                 tour: "<updated tour here>"
-             }
-         });
+exports.updateTour = async (request, response) => {
+    try {
+
+        const tour = await Tour.findByIdAndUpdate(request.params.id, request.body, {
+            new: true,
+            runValidators: true
+        });
+
+        response.status(200).json({
+            status: 'success',
+            data: {
+                tour: tour
+            }
+        });
+    } catch (error) {
+        response.status(400).json({
+            status: 'failed',
+            message: error
+        });
+    }
 }
 // Delete a tour
-exports.deleteTour = (request, response) => {
-    // console.log(request.params);
-    // const id = request.params.id * 1;
-    // const tour = tours.find(element => element.id === id);
+exports.deleteTour = async (request, response) => {
+    try {
+
+       await Tour.findByIdAndDelete(request.params.id);
+
         response.status(204).json({
             status: 'success',
             data: null
         });
+    } catch (error) {
+        response.status(204).json({
+            status: 'No Content',
+            message: error
+        });
+    }
 }
